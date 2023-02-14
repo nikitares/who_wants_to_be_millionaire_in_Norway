@@ -1,16 +1,23 @@
+import random
+
 class Question:
-    def __init__(self, prompt, answer):
+    def __init__(self, prompt, correct_answer, wrong_answers):
         self.prompt = prompt
-        self.answer = answer
+        self.correct_answer = correct_answer
+        self.answers = [correct_answer] + wrong_answers
+        random.shuffle(self.answers)
 
     def ask(self):
-        user_answer = input(self.prompt + '\n')
-        return user_answer == self.answer
+        print(self.prompt)
+        for i, answer in enumerate(self.answers):
+            print(f"{i+1}. {answer}")
+        user_answer = input("Enter the number of the correct answer: ")
+        return self.answers[int(user_answer)-1] == self.correct_answer
 
 questions = [
-    Question("What is the capital of Norway?", "Oslo"),
-    Question("What is the largest city in Norway?", "Oslo"),
-    Question("What is the name of the famous Norwegian composer?", "Edvard Grieg"),
+    Question("What is the capital of Norway?", "Oslo", ["Bergen", "Trondheim", "Stavanger"]),
+    Question("What is the largest city in Norway?", "Oslo", ["Bergen", "Trondheim", "Stavanger"]),
+    Question("What is the name of the famous Norwegian composer?", "Edvard Grieg", ["Johan Svendsen", "Rikard Nordraak", "Geirr Tveitt"]),
     # Add more questions here...
 ]
 
