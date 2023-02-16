@@ -9,18 +9,24 @@ class Question:
         self.reward = reward
 
     def ask(self):
-        print(self.prompt)
-        for i, answer in enumerate(self.answers):
-            letter = chr(ord('A') + i)
-            print(f"{letter}. {answer}")
-        user_answer = input("Enter the letter of the correct answer: ").upper()
-        correct_answer_index = ord(user_answer) - ord('A')
-        if self.answers[correct_answer_index] == self.correct_answer:
-            print(f"Correct! You won {self.reward} kroner!")
-            return self.reward
-        else:
-            print("Incorrect!")
-            return 0
+        while True:
+            print(self.prompt)
+            for i, answer in enumerate(self.answers):
+                letter = chr(ord('A') + i)
+                print(f"{letter}. {answer}")
+            user_answer = input("Enter the letter of the correct answer: ").upper()
+            if user_answer not in ["A", "B", "C", "D"]:
+                print("ERORR! Enter a valid letter from A to D\n")
+                continue  # ask the same question again
+            else:
+                correct_answer_index = ord(user_answer) - ord('A')
+                if self.answers[correct_answer_index] == self.correct_answer:
+                    print(f"Correct! You have {self.reward} kroner!\n")
+                    return self.reward
+                else:
+                    print("Incorrect!")
+                    print("You lost :(")
+                    quit()
 
 questions = [
     Question("What is the capital of Norway?", "Oslo", ["Bergen", "Trondheim", "Stavanger"], 25),
@@ -43,14 +49,10 @@ questions = [
 class Game:
     def __init__(self, questions):
         self.questions = questions
-        self.score = 0
 
     def play(self):
-        for q in self.questions:
-            if q.ask():
-                print("Next\n")
-            else:
-                print("Next\n")
+        for question in self.questions:
+            question.ask()
         print("Game over. Thanks for playing!")
 
 # Create a new game and play it
