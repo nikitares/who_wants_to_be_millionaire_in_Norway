@@ -7,27 +7,61 @@ class Question:
         self.answers = [correct_answer] + wrong_answers
         random.shuffle(self.answers)
         self.reward = reward
+    
+    def fifty_fifty(self):
+        choices = [self.correct_answer]
+        random.shuffle(self.answers)
+        for answer in self.answers:
+            if answer != self.correct_answer:
+                choices.append(answer)
+            if len(choices) == 2:
+                break
+        return choices
+    
+    #create def answer_check for user_answer 
 
-    def ask(self):
+    def ask(self, fifty_fifty_used = True):
         while True:
-            print(self.prompt)
+
+            if fifty_fifty_used == False:
+                fifty_fifty_message = "\nYou can use 50/50 help(input \"50\")"
+            elif fifty_fifty_used == True:
+                fifty_fifty_message = ""
+            
+            print(self.prompt + fifty_fifty_message)
             for i, answer in enumerate(self.answers):
-                letter = chr(ord('A') + i)
+                letter = chr(ord('A') + i) #what is this doing 
                 print(f"{letter}. {answer}")
             user_answer = input("Enter the letter of the correct answer: ").upper()
-            if user_answer not in ["A", "B", "C", "D"]:
+            print("")
+
+            if user_answer not in ["A", "B", "C", "D", "50"]:
                 print("ERORR! Enter a valid letter from A to D\n")
                 continue  # ask the same question again
-            else:
-                correct_answer_index = ord(user_answer) - ord('A')
-                if self.answers[correct_answer_index] == self.correct_answer:
-                    print(f"Correct! You have {self.reward} kroner!\n")
-                    return self.reward
-                else:
-                    print("Incorrect!")
-                    print("You lost :(")
-                    quit()
 
+            elif user_answer == "50" and fifty_fifty_used == False:
+                for i, answer in enumerate(self.fifty_fifty()):
+                    letter = chr(ord('A') + i)
+                    print(f"{letter}. {answer}")
+                user_answer = input("Enter the letter of the correct answer: ").upper()
+                print("")
+                fifty_fifty_used = True
+            
+            elif user_answer == "50" and fifty_fifty_used == True:
+                print("You used your 50/50 hint\n")
+                continue
+            
+            #here mistake and thats why 50/50 isnt working 
+            correct_answer_index = ord(user_answer) - ord('A')
+            if self.answers[correct_answer_index] == self.correct_answer:
+                print(f"Correct! You have {self.reward} kroner!\n")
+                return self.reward
+            else:
+                print("Incorrect!")
+                print("You lost :(")
+                quit()
+
+#all questions it takes it from here(maybe letter i want to read this qustions from different file)
 questions = [
     Question("What is the capital of Norway?", "Oslo", ["Bergen", "Trondheim", "Stavanger"], 25),
     Question("What is the largest city in Norway?", "Oslo", ["Bergen", "Trondheim", "Stavanger"], 50),
@@ -51,6 +85,9 @@ class Game:
         self.questions = questions
 
     def play(self):
+        #\033[0;32;1m this line of code is responsible for color 
+        welcome_message = f"\n\033[0;32;1mWelcome to 'Who Wants to Be a Millionaire in Norway'!Get ready to test your knowledge and win big. You will be presented with 15 questions of increasing difficulty, and for each question you answer correctly, you'll move closer to the grand prize of one million kroner. Let's get started!\n"
+        print(welcome_message)
         for question in self.questions:
             question.ask()
         print("Game over. Thanks for playing!")
