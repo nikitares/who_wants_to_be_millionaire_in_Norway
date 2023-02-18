@@ -1,4 +1,5 @@
 import random
+#create differnt class hints 
 
 class Question:
     def __init__(self, prompt, correct_answer, wrong_answers, reward):
@@ -20,7 +21,7 @@ class Question:
     
     #create def answer_check for user_answer 
 
-    def ask(self, fifty_fifty_used = True):
+    def ask(self, fifty_fifty_used = False):
         while True:
 
             if fifty_fifty_used == False:
@@ -35,16 +36,23 @@ class Question:
             user_answer = input("Enter the letter of the correct answer: ").upper()
             print("")
 
-            if user_answer not in ["A", "B", "C", "D", "50"]:
-                print("ERORR! Enter a valid letter from A to D\n")
-                continue  # ask the same question again
+            # ask the same question again, if TRUE
+            def user_answer_check():
+                if user_answer not in ["A", "B", "C", "D", "50"]:
+                    print("ERORR! Enter a valid letter from A to D\n")
+                    return True
+                       
+            if user_answer_check() == True:
+                continue
 
-            elif user_answer == "50" and fifty_fifty_used == False:
+            if user_answer == "50" and fifty_fifty_used == False:
                 for i, answer in enumerate(self.fifty_fifty()):
                     letter = chr(ord('A') + i)
                     print(f"{letter}. {answer}")
                 user_answer = input("Enter the letter of the correct answer: ").upper()
                 print("")
+                if user_answer_check() == True:
+                    continue
                 fifty_fifty_used = True
             
             elif user_answer == "50" and fifty_fifty_used == True:
