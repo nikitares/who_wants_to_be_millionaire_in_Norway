@@ -1,30 +1,33 @@
 import random
 
+#hint use status 
+used_audience_help = False
+used_phone_friend = False
+used_fifty_fifty = False
+used_switch_question = False
+
 #function for checking user input 
 def user_answer_check(user_answ):
                 if user_answ not in ["A", "B", "C", "D", "HINT"]:
                     print("ERORR! Enter a valid letter from A to D\n")
                     return True
+
 #create differnt class hints 
 class Hint:
     def __init__(self, correct_answer, wrong_answers):
         self.correct_answer = correct_answer
-        self.wrong_answers = wrong_answers  
-        self.used_audience_help = False
-        self.used_phone_friend = False
-        self.used_fifty_fifty = False
-        self.used_switch_question = False
-
+        self.wrong_answers = wrong_answers
+        
     def ask_hint(self):
+        global used_fifty_fifty
         user_hint = input("1) 50/50 2) Ask the audience 3) Phone a friend 4) Switch the question\n Enter a number of hint: ")
         print("")
         if user_hint == "1":
-            if self.used_fifty_fifty == True:
-                print("Sorry, you've already used the 50/50 help.")
-                quit()
-
-            
-            self.used_fifty_fifty = True
+            if used_fifty_fifty == True:
+                print("Sorry, you've already used the 50/50 help.\n")
+                return
+                
+            used_fifty_fifty = True
 
             while True:
                 choice = self.fifty_fifty()
@@ -41,7 +44,7 @@ class Hint:
                 
                 correct_answer_index = ord(user_answer) - ord('A')
                 if choice[correct_answer_index] == self.correct_answer: 
-                    return 
+                    return True 
                 else:
                     quit()
 
@@ -117,9 +120,11 @@ class Question:
                 continue
 
             if user_answer == "HINT":
-                self.hint.ask_hint()
-                print(f"Correct! You have {self.reward} kroner!\n")
-                return self.reward
+                if self.hint.ask_hint() == True:
+                    print(f"Correct! You have {self.reward} kroner!\n")
+                    return self.reward
+                else:
+                    continue
             
             else:
                 correct_answer_index = ord(user_answer) - ord('A')
