@@ -12,7 +12,7 @@ def user_answer_check(user_answ):
                     print("ERORR! Enter a valid letter from A to D\n")
                     return True
 
-#create differnt class hints 
+#differnt class hints 
 class Hint:
     def __init__(self, correct_answer, wrong_answers):
         self.correct_answer = correct_answer
@@ -48,7 +48,6 @@ class Hint:
                     print("You lost :(\033[0m")
                     quit()
 
-                
         elif user_hint == "2":
             global used_audience_help
             if used_audience_help == True:
@@ -58,9 +57,17 @@ class Hint:
             used_audience_help = True
             self.ask_the_audience()
             pass
+
         elif user_hint == "3":
-        # code to implement "Phone a friend" hint
+            global used_phone_friend
+            if used_phone_friend == True:
+                print("Sorry, you've already used the phone a friend help.")
+                return
+
+            used_phone_friend = True 
+            self.phone_a_friend()
             pass
+
         elif user_hint == "4":
         # code to implement "Switch the question" hint
             pass
@@ -98,12 +105,13 @@ class Hint:
             for answer, prob in audience_votes.items():
                 print(f"{answer}: {prob*100:.1f}%")
 
-#    def phone_a_friend(self, correct_answer):
-#        if not self.used_phone_friend:
-#            # implementation of the phone_a_friend method
-#            self.used_phone_friend = True
-#        else:
-#            print("Sorry, you've already used the phone a friend help.")
+    def phone_a_friend(self):
+        all_answers =  self.wrong_answers + [self.correct_answer]
+        answer_probabilities = [0.7 if answer == self.correct_answer else 0.1 for answer in all_answers]
+        answer = random.choices(all_answers, weights=answer_probabilities)[0]
+        print(f"Your friend thinks the answer is {answer}")
+            
+
 
 #    def switch_the_question(self):
 #        if not self.used_switch_question:
