@@ -1,9 +1,9 @@
 import random
 
 #hint use status 
+used_fifty_fifty = False
 used_audience_help = False
 used_phone_friend = False
-used_fifty_fifty = False
 used_switch_question = False
 
 #function for checking user input 
@@ -19,10 +19,10 @@ class Hint:
         self.wrong_answers = wrong_answers
         
     def ask_hint(self):
-        global used_fifty_fifty
-        user_hint = input("1) 50/50 2) Ask the audience 3) Phone a friend 4) Switch the question\n Enter a number of hint: ")
+        user_hint = input("\033[35m1) 50/50 2) Ask the audience 3) Phone a friend 4) Switch the question\n Enter a number of hint: ")
         print("")
         if user_hint == "1":
+            global used_fifty_fifty
             if used_fifty_fifty == True:
                 print("Sorry, you've already used the 50/50 help.\n")
                 return
@@ -35,22 +35,28 @@ class Hint:
                     letter = chr(ord('A') + i) #what is this doing 
                     print(f"{letter}. {answer}")
                 user_answer = input("Enter the letter of the correct answer: ").upper()
-                print("")
 
             #function which checks user answer                      
                 if user_answer_check(user_answer) == True:
                     continue
                 
-                
                 correct_answer_index = ord(user_answer) - ord('A')
                 if choice[correct_answer_index] == self.correct_answer: 
                     return True 
                 else:
+                    print("\n\033[91mIncorrect!")
+                    print("You lost :(\033[0m")
                     quit()
 
                 
         elif user_hint == "2":
-        # code to implement "Ask the audience" hint
+            global used_audience_help
+            if used_audience_help == True:
+                print("Sorry, you've already used the audience help help.\n")
+                return
+
+            used_audience_help = True
+            self.ask_the_audience()
             pass
         elif user_hint == "3":
         # code to implement "Phone a friend" hint
@@ -70,12 +76,27 @@ class Hint:
             return choices
 
 
-#    def ask_the_audience(self, correct_answer):
-#        if not self.used_audience_help:
-#            # implementation of the ask_the_audience method
-#            self.used_audience_help = True
-#        else:
-#            print("Sorry, you've already used the ask the audience help.")
+    def ask_the_audience(self):
+            # Generate a list of probabilities for each answer choice
+            total_choices = len(self.wrong_answers) + 1
+            remaining_prob = 1.0
+            audience_choices = []
+            for i in range(total_choices - 1):
+                choice_prob = random.triangular(0, remaining_prob)
+                remaining_prob -= choice_prob
+                audience_choices.append(choice_prob)
+            audience_choices.append(remaining_prob)
+
+            audience_votes = {
+                self.correct_answer: audience_choices[0]
+            }
+            for i, answer in enumerate(self.wrong_answers):
+                audience_votes[answer] = audience_choices[i+1]
+            
+            # Print the results
+            print("The audience votes are:")
+            for answer, prob in audience_votes.items():
+                print(f"{answer}: {prob*100:.1f}%")
 
 #    def phone_a_friend(self, correct_answer):
 #        if not self.used_phone_friend:
@@ -83,8 +104,6 @@ class Hint:
 #            self.used_phone_friend = True
 #        else:
 #            print("Sorry, you've already used the phone a friend help.")
-
-
 
 #    def switch_the_question(self):
 #        if not self.used_switch_question:
@@ -121,19 +140,21 @@ class Question:
 
             if user_answer == "HINT":
                 if self.hint.ask_hint() == True:
-                    print(f"Correct! You have {self.reward} kroner!\n")
+                    print("\033[0m")
+                    print(f"\033[32mCorrect! You have {self.reward} kroner!\033[0m\n")
                     return self.reward
                 else:
+                    print("\033[0m")
                     continue
             
             else:
                 correct_answer_index = ord(user_answer) - ord('A')
                 if self.answers[correct_answer_index] == self.correct_answer:
-                    print(f"Correct! You have {self.reward} kroner!\n")
+                    print(f"\033[32mCorrect! You have {self.reward} kroner!\033[0m\n")
                     return self.reward
                 else:
-                    print("Incorrect!")
-                    print("You lost :(")
+                    print("\033[91mIncorrect!")
+                    print("You lost :(\033[0m")
                     quit()
 
 #all questions it takes it from here(maybe letter i want to read this qustions from different file)
@@ -161,7 +182,7 @@ class Game:
 
     def play(self):
         #\033[0;32;1m this line of code is responsible for color 
-        welcome_message = f"\n\033[0;32;1mWelcome to 'Who Wants to Be a Millionaire in Norway'!Get ready to test your knowledge and win big. You will be presented with 15 questions of increasing difficulty, and for each question you answer correctly, you'll move closer to the grand prize of one million kroner. Let's get started!\n"
+        welcome_message = f"\nWelcome to 'Who Wants to Be a Millionaire in Norway'!Get ready to test your knowledge and win big. You will be presented with 15 questions of increasing difficulty, and for each question you answer correctly, you'll move closer to the grand prize of one million kroner. Let's get started!\n"
         print(welcome_message)
         for question in self.questions:
             question.ask()
