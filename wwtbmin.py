@@ -12,10 +12,6 @@ def user_answer_check(user_answ):
                     print("ERORR! Enter a valid letter from A to D\n")
                     return True
 
-#function for win or lost 
-#def win_or_lost(hint_function):
-
-
 #differnt class hints 
 class Hint:
     def __init__(self, correct_answer, wrong_answers):
@@ -63,7 +59,7 @@ class Hint:
         elif user_hint == "4":
             global used_switch_question
             if used_switch_question == True:
-                print("Sorry, you've already used the switch question help.\n")
+                print("Sorry, you've already used the switch question help.")
                 return
             
             used_switch_question = True 
@@ -93,10 +89,6 @@ class Hint:
                 else:
                     return False
                     
-
-
-
-
     def ask_the_audience(self):
             # Generate a list of probabilities for each answer choice
             total_choices = len(self.wrong_answers) + 1
@@ -124,8 +116,6 @@ class Hint:
         answer_probabilities = [0.7 if answer == self.correct_answer else 0.1 for answer in all_answers]
         answer = random.choices(all_answers, weights=answer_probabilities)[0]
         print(f"Your friend thinks the answer is {answer}")
-            
-
 
     def switch_the_question(self):
         questions = [
@@ -180,8 +170,6 @@ class Question:
         #Here I use class Hint 
         self.hint = Hint(correct_answer, wrong_answers)
     
-    #create def answer_check for user_answer 
-
     def ask(self):
         while True:
 
@@ -245,6 +233,5 @@ class Game:
             question.ask()
         print("You won! Game over. Thanks for playing!")
 
-# Create a new game and play it
 game = Game(questions)
 game.play()
