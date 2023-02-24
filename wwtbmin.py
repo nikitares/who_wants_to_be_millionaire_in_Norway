@@ -51,7 +51,7 @@ class Hint:
         elif user_hint == "2":
             global used_audience_help
             if used_audience_help == True:
-                print("Sorry, you've already used the audience help help.\n")
+                print("Sorry, you've already used the audience help.\n")
                 return
 
             used_audience_help = True
@@ -61,7 +61,7 @@ class Hint:
         elif user_hint == "3":
             global used_phone_friend
             if used_phone_friend == True:
-                print("Sorry, you've already used the phone a friend help.")
+                print("Sorry, you've already used the call a friend help.")
                 return
 
             used_phone_friend = True 
@@ -69,10 +69,17 @@ class Hint:
             pass
 
         elif user_hint == "4":
-        # code to implement "Switch the question" hint
-            pass
-        else:
-            print("Invalid hint choice. Please enter a number between 1 and 4.")  # handle invalid input
+            global used_switch_question
+            if used_switch_question == True:
+                print("Sorry, you've already used the switch question help.\n")
+                return
+            
+            used_switch_question = True 
+            if self.switch_the_question() == True:
+                return True 
+            
+
+
             
 
     def fifty_fifty(self):
@@ -113,13 +120,49 @@ class Hint:
             
 
 
-#    def switch_the_question(self):
-#        if not self.used_switch_question:
-#            # implementation of the switch_the_question method
-#            self.used_switch_question = True
-#        else:
-#            print("Sorry, you've already used the switch the question help.")
+    def switch_the_question(self):
+        questions = [
+        {"question": "What is the name of the traditional Norwegian dish made of sheep's head, often served during Christmas?",
+         "answers": ["Fårikål", "Pinnekjøtt", "Smalahove", "Rakfisk"],
+         "correct_answer": "Smalahove"},
+        {"question": "What is the name of the Norwegian island that is the northernmost point of the country and also home to a Russian settlement?",
+         "answers": ["Svalbard", "Jan Mayen", "Hopen", "Bear Island"],
+         "correct_answer": "Svalbard"},
+        {"question": "What is the name of the unique Norwegian cheese that is caramelized on the surface and often served as a dessert?",
+         "answers": ["Jarlsberg", "Gudbrandsdalsost", "Norvegia", "Brunost"],
+         "correct_answer": "Brunost"},
+        {"question": "What is the name of the Norwegian town that claims to be the inspiration for the kingdom of Arendelle in Disney's Frozen?",
+         "answers": ["Ålesund", "Bergen", "Arendal", "Oslo"],
+         "correct_answer": "Arendal"},
+        {"question": "What is the name of the longest road tunnel in the world, located in Norway?",
+         "answers": ["Lærdal Tunnel", "Eiksund Tunnel", "Toven Tunnel", "Hvalfjörður Tunnel"],
+         "correct_answer": "Lærdal Tunnel"}
+        ]
 
+        question = random.choice(questions)
+
+        print(question["question"])
+        random.shuffle(question["answers"])
+        while True:
+            answerz = question["answers"]
+            for i, answer in enumerate(answerz):
+                letter = chr(ord('A') + i) #what is this doing 
+                print(f"{letter}. {answer}")
+            
+            user_answer = input("Enter the letter of the correct answer: ").upper()
+            print("")
+
+            if user_answer_check(user_answer) == True:
+                continue
+            
+            correct_answer_index = ord(user_answer) - ord('A')
+            if answerz[correct_answer_index] == question["correct_answer"]: 
+                return True 
+            else:
+                print("\n\033[91mIncorrect!")
+                print("You lost :(\033[0m")
+                quit()
+    
 class Question:
     def __init__(self, prompt, correct_answer, wrong_answers, reward):
         self.prompt = prompt
@@ -148,7 +191,6 @@ class Question:
 
             if user_answer == "HINT":
                 if self.hint.ask_hint() == True:
-                    print("\033[0m")
                     print(f"\033[32mCorrect! You have {self.reward} kroner!\033[0m\n")
                     return self.reward
                 else:
