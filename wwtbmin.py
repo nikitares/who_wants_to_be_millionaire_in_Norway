@@ -12,6 +12,10 @@ def user_answer_check(user_answ):
                     print("ERORR! Enter a valid letter from A to D\n")
                     return True
 
+#function for win or lost 
+#def win_or_lost(hint_function):
+
+
 #differnt class hints 
 class Hint:
     def __init__(self, correct_answer, wrong_answers):
@@ -24,34 +28,22 @@ class Hint:
         if user_hint == "1":
             global used_fifty_fifty
             if used_fifty_fifty == True:
-                print("Sorry, you've already used the 50/50 help.\n")
+                print("Sorry, you've already used the 50/50 help.")
                 return
                 
             used_fifty_fifty = True
 
-            while True:
-                choice = self.fifty_fifty()
-                for i, answer in enumerate(choice):
-                    letter = chr(ord('A') + i) #what is this doing 
-                    print(f"{letter}. {answer}")
-                user_answer = input("Enter the letter of the correct answer: ").upper()
-
-            #function which checks user answer                      
-                if user_answer_check(user_answer) == True:
-                    continue
-                
-                correct_answer_index = ord(user_answer) - ord('A')
-                if choice[correct_answer_index] == self.correct_answer: 
-                    return True 
-                else:
-                    print("\n\033[91mIncorrect!")
-                    print("You lost :(\033[0m")
-                    quit()
+            if self.fifty_fifty() == True:
+                return True 
+            else:
+                print("\n\033[91mIncorrect!")
+                print("You lost :(\033[0m")
+                quit()
 
         elif user_hint == "2":
             global used_audience_help
             if used_audience_help == True:
-                print("Sorry, you've already used the audience help.\n")
+                print("Sorry, you've already used the audience help.")
                 return
 
             used_audience_help = True
@@ -78,16 +70,31 @@ class Hint:
             if self.switch_the_question() == True:
                 return True 
             
-
-
-            
-
     def fifty_fifty(self):
             choices = [self.correct_answer]
             for answer in random.sample(self.wrong_answers, 1):
                 choices.append(answer)
             random.shuffle(choices)
-            return choices
+
+            while True:
+                for i, answer in enumerate(choices):
+                    letter = chr(ord('A') + i) #what is this doing 
+                    print(f"{letter}. {answer}")
+                user_answer = input("Enter the letter of the correct answer: ").upper()
+                print("")
+
+            #function which checks user answer                      
+                if user_answer_check(user_answer) == True or user_answer == "HINT":
+                    continue
+                
+                correct_answer_index = ord(user_answer) - ord('A')
+                if choices[correct_answer_index] == self.correct_answer: 
+                    return True 
+                else:
+                    return False
+                    
+
+
 
 
     def ask_the_audience(self):
@@ -236,7 +243,7 @@ class Game:
         print(welcome_message)
         for question in self.questions:
             question.ask()
-        print("Game over. Thanks for playing!")
+        print("You won! Game over. Thanks for playing!")
 
 # Create a new game and play it
 game = Game(questions)
