@@ -1,4 +1,6 @@
 # who_wants_to_be_millionaire_in_Norway
+I created this game as a Codecademy project. Although the code may not be perfect, I learned a lot from this experience and I believe it has the potential for further improvement. Thank you for understanding and for your interest in my project.
+
 The game is a console-based quiz game, where the player has to answer multiple-choice questions to progress. The game offers four different types of hints,
 namely "50/50", "Ask the audience", "Phone a friend", and "Switch the question". The player can use each hint only once throughout the game.
 
